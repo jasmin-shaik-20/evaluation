@@ -1,7 +1,7 @@
 package com.example.evaluation.controller;
 
 import com.example.evaluation.Controller.OrderController;
-import com.example.evaluation.exception.OrderNotFoundException;
+import com.example.evaluation.exception.CommonException;
 import com.example.evaluation.service.OrderService;
 import com.example.evaluation.util.TestData;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -119,14 +119,14 @@ public class OrderControllerTest {
     //failure
     @Test
     void deleteOrderByIdException() throws Exception{
-        when(orderService.deleteOrder(2)).thenThrow(new OrderNotFoundException("Order not found"));
+        when(orderService.deleteOrder(2)).thenThrow(new CommonException("000","Order not found"));
         this.mockMvc.perform(delete("/orders/" + 2))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }
 
     @Test
     void getOrderByIdException() throws Exception{
-        when(orderService.getOrder(2)).thenThrow(new OrderNotFoundException("Order not found"));
+        when(orderService.getOrder(2)).thenThrow(new CommonException("000","Order not found"));
         this.mockMvc.perform(get("/orders/" + 2))
                 .andDo(print()).andExpect(status().isInternalServerError());
     }

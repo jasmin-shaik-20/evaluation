@@ -1,8 +1,6 @@
 package com.example.evaluation.service;
 
-import com.example.evaluation.exception.OrderItemNotFoundException;
-import com.example.evaluation.exception.OrderNotFoundException;
-import com.example.evaluation.exception.ProductNotFoundException;
+import com.example.evaluation.exception.CommonException;
 import com.example.evaluation.repository.OrderItemsRepository;
 import com.example.evaluation.repository.OrderRepository;
 import com.example.evaluation.repository.ProductRepository;
@@ -14,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 
 import java.util.Optional;
 
@@ -46,7 +43,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    void testCreateOrder() throws ProductNotFoundException {
+    void testCreateOrder() throws CommonException {
         when(productRepository.findById(10)).thenReturn(Optional.of(product1));
         when(productRepository.findById(20)).thenReturn(Optional.of(product2));
         productRepository.save(product1);
@@ -56,20 +53,20 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    void testGetOrderById() throws OrderNotFoundException{
+    void testGetOrderById() throws CommonException{
         when(orderRepository.findById(0)).thenReturn(Optional.ofNullable(order));
         assertThat(orderServiceImpl.getOrder(0)).isEqualTo(order);
     }
 
     @Test
-    void testDeleteById() throws OrderNotFoundException{
+    void testDeleteById() throws CommonException{
         when(orderRepository.findById(0)).thenReturn(Optional.ofNullable(order));
         doNothing().when(orderRepository).deleteById(0);
         assertThat(orderServiceImpl.deleteOrder(0)).isEqualTo("Order deleted Successfully");
     }
 
     @Test
-    void testAddProductById() throws OrderNotFoundException, OrderItemNotFoundException {
+    void testAddProductById() throws CommonException {
         when(orderRepository.findById(0)).thenReturn(Optional.ofNullable(order));
         when(orderRepository.save(order)).thenReturn(order);
         when(orderItemsRepository.save(orderItem1)).thenReturn(orderItem1);
@@ -78,7 +75,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    void testRemoveProductById() throws OrderNotFoundException, OrderItemNotFoundException {
+    void testRemoveProductById() throws CommonException {
         when(orderRepository.findById(0)).thenReturn(Optional.ofNullable(order));
         when(orderRepository.save(order)).thenReturn(order);
         when(orderItemsRepository.save(orderItem1)).thenReturn(orderItem1);
@@ -86,7 +83,7 @@ public class OrderServiceImplTest {
         assertThat(orderServiceImpl.updateOrder(0,"remove",orderItemsRequestList)).isEqualTo(order);
     }
     @Test
-    void testUpdateProductById() throws OrderNotFoundException, OrderItemNotFoundException {
+    void testUpdateProductById() throws CommonException {
         when(orderRepository.findById(0)).thenReturn(Optional.ofNullable(order));
         when(orderRepository.save(order)).thenReturn(order);
         when(orderItemsRepository.findById(3)).thenReturn(Optional.ofNullable(orderItem1));
@@ -98,14 +95,14 @@ public class OrderServiceImplTest {
     //failure
     @Test
     void testDeleteOrderByIdException(){
-        assertThrows(OrderNotFoundException.class,() ->{
+        assertThrows(CommonException.class,() ->{
             orderServiceImpl.deleteOrder(0);
         });
     }
 
     @Test
     void testGetOrderByIdException(){
-        assertThrows(OrderNotFoundException.class,() ->{
+        assertThrows(CommonException.class,() ->{
             orderServiceImpl.getOrder(0);
         });
     }
